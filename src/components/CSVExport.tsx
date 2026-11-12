@@ -7,9 +7,9 @@ export function CSVExport({ result }: { result: ScanResult }) {
     const headers = ["Tracker Name", "Domain", "Category", "Risk Level", "Confidence", "Expiry", "Secure", "SameSite", "Explanation", "Website URL", "Scan Timestamp"];
     const rows = result.trackers.map(t => [
       t.name, t.domain, t.category, t.riskLevel,
-      Math.round(t.confidence * 100) + "%",
+      Math.round((t.confidence ?? 0) * 100) + "%",
       t.expiry, t.secure ? "Yes" : "No", t.sameSite,
-      `"${t.explanation.replace(/"/g, '""')}"`,
+      `"${(t.explanation || "").replace(/"/g, '""')}"`,
       result.url, result.timestamp,
     ]);
 

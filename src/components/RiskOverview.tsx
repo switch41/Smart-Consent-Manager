@@ -9,12 +9,17 @@ const actionConfig = {
 } as const;
 
 export function RiskOverview({ result }: { result: ScanResult }) {
-  const ActionIcon = actionConfig[result.suggestedAction].icon;
+  const trackers = result.trackers ?? [];
+  const action = actionConfig[result.suggestedAction] ?? {
+    icon: Eye,
+    style: "text-muted-foreground",
+  };
+  const ActionIcon = action.icon;
   const categories = {
-    Essential: result.trackers.filter(t => t.category === "Essential").length,
-    Analytics: result.trackers.filter(t => t.category === "Analytics").length,
-    Marketing: result.trackers.filter(t => t.category === "Marketing").length,
-    Suspicious: result.trackers.filter(t => t.category === "Suspicious").length,
+    Essential: trackers.filter(t => t.category === "Essential").length,
+    Analytics: trackers.filter(t => t.category === "Analytics").length,
+    Marketing: trackers.filter(t => t.category === "Marketing").length,
+    Suspicious: trackers.filter(t => t.category === "Suspicious").length,
   };
 
   return (
@@ -33,11 +38,11 @@ export function RiskOverview({ result }: { result: ScanResult }) {
         {/* Suggested Action */}
         <div className="bg-card border border-border rounded-xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <ActionIcon className={`h-4 w-4 ${actionConfig[result.suggestedAction].style}`} />
+            <ActionIcon className={`h-4 w-4 ${action.style}`} />
             <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Suggested Action</span>
           </div>
-          <span className={`text-lg font-semibold ${actionConfig[result.suggestedAction].style}`}>
-            {result.suggestedAction}
+          <span className={`text-lg font-semibold ${action.style}`}>
+            {result.suggestedAction || "Unknown"}
           </span>
           <p className="mt-3 text-xs text-muted-foreground">Based on combined tracker and policy analysis</p>
         </div>
@@ -48,7 +53,7 @@ export function RiskOverview({ result }: { result: ScanResult }) {
             <Eye className="h-4 w-4 text-primary" />
             <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Trackers Found</span>
           </div>
-          <span className="text-3xl font-bold text-foreground">{result.trackers.length}</span>
+          <span className="text-3xl font-bold text-foreground">{trackers.length}</span>
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-mono">
             {Object.entries(categories).map(([cat, count]) => (
               count > 0 && (

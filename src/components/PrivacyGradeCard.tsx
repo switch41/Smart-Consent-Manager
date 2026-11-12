@@ -35,16 +35,16 @@ export function PrivacyGradeCard({ grade }: { grade: PrivacyGrade }) {
 
       <div className="flex items-center gap-4">
         <div className={`w-16 h-16 rounded-xl border-2 flex items-center justify-center ${colorClass}`}>
-          <span className="text-2xl font-black">{grade.grade}</span>
+          <span className="text-2xl font-black">{grade.grade || "—"}</span>
         </div>
         <div className="flex-1">
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-semibold text-foreground">{grade.score}/100</span>
+            <span className="text-sm font-semibold text-foreground">{grade.score ?? "—"}/100</span>
             <span className="text-xs text-muted-foreground font-mono">DuckDuckGo-style scoring</span>
           </div>
           <div className="mt-2 space-y-1">
             {breakdownLabels.map(({ key, label }) => {
-              const value = grade.breakdown[key];
+              const value = grade.breakdown?.[key] ?? 0;
               if (value === 0) return null;
               return (
                 <div key={key} className="flex items-center gap-2 text-[10px] font-mono">

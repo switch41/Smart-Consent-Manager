@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, ExternalLink, Clock, AlertTriangle } from "lucide-react";
-import { NavLink } from "@/components/NavLink";
+import { ExternalLink, Clock, AlertTriangle } from "lucide-react";
+import { AppHeader } from "@/components/AppHeader";
 import { RiskBadge } from "@/components/RiskBadge";
 import type { RiskLevel } from "@/lib/types";
 
@@ -35,19 +35,7 @@ const History = () => {
 
   return (
     <div className="min-h-screen bg-background grid-bg">
-      <header className="border-b border-border bg-card/60 backdrop-blur-md sticky top-0 z-50">
-        <div className="container max-w-6xl flex items-center gap-2 py-3">
-          <Shield className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm text-foreground">SmartConsent</span>
-          <nav className="flex items-center gap-4 ml-6">
-            <NavLink to="/overview" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Overview</NavLink>
-            <NavLink to="/" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Scanner</NavLink>
-            <NavLink to="/consents" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Consents</NavLink>
-            <NavLink to="/history" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">History</NavLink>
-          </nav>
-          <span className="text-xs text-muted-foreground font-mono ml-auto">v2.1 MVP</span>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="container max-w-6xl py-12">
         <h1 className="text-xl font-semibold text-foreground mb-6">Scan History</h1>

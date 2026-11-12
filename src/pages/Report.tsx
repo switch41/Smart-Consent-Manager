@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, ArrowLeft, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "@/components/NavLink";
+import { AppHeader } from "@/components/AppHeader";
 import { RiskOverview } from "@/components/RiskOverview";
 import { TrackerTable } from "@/components/TrackerTable";
 import { TrackerDetail } from "@/components/TrackerDetail";
@@ -12,6 +12,8 @@ import { CategoryChart } from "@/components/CategoryChart";
 import { CSVExport } from "@/components/CSVExport";
 import { PrivacyGradeCard } from "@/components/PrivacyGradeCard";
 import type { ScanResult, TrackerInfo } from "@/lib/types";
+import { ensurePrivacyGrade } from "@/lib/privacyGrade";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const Report = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,15 +32,22 @@ const Report = () => {
         if (error || !data) {
           console.error("Failed to load scan:", error);
         } else {
+          const trackers = (data.trackers as TrackerInfo[]) || [];
+          const policyAnalysis = data.policy_analysis as ScanResult["policyAnalysis"];
           setResult({
             url: data.url,
             timestamp: data.created_at,
-            overallRisk: data.overall_risk as any,
+            overallRisk: data.overall_risk as ScanResult["overallRisk"],
             riskExplanation: data.risk_explanation,
-            suggestedAction: data.suggested_action as any,
-            trackers: (data.trackers as any) || [],
-            policyAnalysis: data.policy_analysis as any,
-            privacyGrade: (data as any).privacy_grade || undefined,
+            suggestedAction: data.suggested_action as ScanResult["suggestedAction"],
+            trackers,
+            policyAnalysis,
+            privacyGrade: ensurePrivacyGrade(
+              (data as { privacy_grade?: unknown }).privacy_grade,
+              trackers,
+              policyAnalysis,
+              data.url,
+            ),
           });
         }
         setLoading(false);
@@ -47,20 +56,7 @@ const Report = () => {
 
   return (
     <div className="min-h-screen bg-background grid-bg">
-      <header className="border-b border-border bg-card/60 backdrop-blur-md sticky top-0 z-50">
-        <div className="container max-w-6xl flex items-center gap-2 py-3">
-          <Shield className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm text-foreground">SmartConsent</span>
-          <nav className="flex items-center gap-4 ml-6">
-            <NavLink to="/overview" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Overview</NavLink>
-            <NavLink to="/" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Scanner</NavLink>
-            <NavLink to="/sandbox" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Sandbox</NavLink>
-            <NavLink to="/consents" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Consents</NavLink>
-            <NavLink to="/history" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">History</NavLink>
-          </nav>
-          <span className="text-xs text-muted-foreground font-mono ml-auto">v2.1 MVP</span>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="container max-w-6xl py-12 space-y-6">
         <Link to="/history" className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors">
@@ -77,7 +73,7 @@ const Report = () => {
         ) : !result ? (
           <div className="text-center py-20 text-sm text-muted-foreground">Scan not found.</div>
         ) : (
-          <>
+          <ErrorBoundary>
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-lg font-semibold text-foreground">Privacy Report</h1>
@@ -98,7 +94,7 @@ const Report = () => {
 
             <RiskOverview result={result} />
 
-            {result.privacyGrade && (
+            {result.privacyGrade?.grade && (
               <PrivacyGradeCard grade={result.privacyGrade} />
             )}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -111,7 +107,7 @@ const Report = () => {
             </div>
 
             <PolicyAnalysisCard analysis={result.policyAnalysis} />
-          </>
+          </ErrorBoundary>
         )}
       </main>
 

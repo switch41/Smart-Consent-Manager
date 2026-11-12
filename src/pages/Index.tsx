@@ -9,10 +9,9 @@ import { CategoryChart } from "@/components/CategoryChart";
 import { PrivacyGradeCard } from "@/components/PrivacyGradeCard";
 import { CSVExport } from "@/components/CSVExport";
 import type { ScanResult, TrackerInfo } from "@/lib/types";
-import { Shield, History } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { NavLink } from "@/components/NavLink";
+import { AppHeader } from "@/components/AppHeader";
 
 const Index = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -76,20 +75,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background grid-bg">
-      <header className="border-b border-border bg-card/60 backdrop-blur-md sticky top-0 z-50">
-        <div className="container max-w-6xl flex items-center gap-2 py-3">
-          <Shield className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm text-foreground">SmartConsent</span>
-          <nav className="flex items-center gap-4 ml-6">
-            <NavLink to="/overview" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Overview</NavLink>
-            <NavLink to="/" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Scanner</NavLink>
-            <NavLink to="/sandbox" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Sandbox</NavLink>
-            <NavLink to="/consents" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Consents</NavLink>
-            <NavLink to="/history" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">History</NavLink>
-          </nav>
-          <span className="text-xs text-muted-foreground font-mono ml-auto">v2.1 MVP</span>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="container max-w-6xl py-12 space-y-8">
         <section className="py-8">

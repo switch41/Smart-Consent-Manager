@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Shield, Cookie, BarChart3, Megaphone, Globe } from "lucide-react";
+import { Cookie, BarChart3, Megaphone, Globe } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { NavLink } from "@/components/NavLink";
+import { AppHeader } from "@/components/AppHeader";
 import { useToast } from "@/hooks/use-toast";
 
 interface ConsentCategory {
@@ -68,19 +68,7 @@ const Consents = () => {
 
   return (
     <div className="min-h-screen bg-background grid-bg">
-      <header className="border-b border-border bg-card/60 backdrop-blur-md sticky top-0 z-50">
-        <div className="container max-w-6xl flex items-center gap-2 py-3">
-          <Shield className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm text-foreground">SmartConsent</span>
-          <nav className="flex items-center gap-4 ml-6">
-            <NavLink to="/overview" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Overview</NavLink>
-            <NavLink to="/" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Scanner</NavLink>
-            <NavLink to="/consents" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">Consents</NavLink>
-            <NavLink to="/history" className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors" activeClassName="text-primary">History</NavLink>
-          </nav>
-          <span className="text-xs text-muted-foreground font-mono ml-auto">v2.1 MVP</span>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="container max-w-2xl py-12 space-y-8">
         <section>

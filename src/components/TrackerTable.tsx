@@ -27,26 +27,34 @@ export function TrackerTable({ trackers, onSelect }: TrackerTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {trackers.map((tracker) => (
-            <TableRow
-              key={tracker.id}
-              className="border-border cursor-pointer hover:bg-secondary/50 transition-colors"
-              onClick={() => onSelect(tracker)}
-            >
-              <TableCell className="font-mono text-sm text-foreground">{tracker.name}</TableCell>
-              <TableCell className="font-mono text-xs text-muted-foreground">{tracker.domain}</TableCell>
-              <TableCell><CategoryBadge category={tracker.category} /></TableCell>
-              <TableCell><RiskBadge level={tracker.riskLevel} /></TableCell>
-              <TableCell className="font-mono text-xs text-muted-foreground">{tracker.expiry}</TableCell>
-              <TableCell className="text-center">
-                {tracker.secure ? (
-                  <Lock className="h-3.5 w-3.5 text-success mx-auto" />
-                ) : (
-                  <Unlock className="h-3.5 w-3.5 text-destructive mx-auto" />
-                )}
+          {trackers.length === 0 ? (
+            <TableRow className="border-border hover:bg-transparent">
+              <TableCell colSpan={6} className="text-center text-xs font-mono text-muted-foreground py-8">
+                No trackers detected in this scan
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            trackers.map((tracker) => (
+              <TableRow
+                key={tracker.id}
+                className="border-border cursor-pointer hover:bg-secondary/50 transition-colors"
+                onClick={() => onSelect(tracker)}
+              >
+                <TableCell className="font-mono text-sm text-foreground">{tracker.name}</TableCell>
+                <TableCell className="font-mono text-xs text-muted-foreground">{tracker.domain}</TableCell>
+                <TableCell><CategoryBadge category={tracker.category} /></TableCell>
+                <TableCell><RiskBadge level={tracker.riskLevel} /></TableCell>
+                <TableCell className="font-mono text-xs text-muted-foreground">{tracker.expiry}</TableCell>
+                <TableCell className="text-center">
+                  {tracker.secure ? (
+                    <Lock className="h-3.5 w-3.5 text-success mx-auto" />
+                  ) : (
+                    <Unlock className="h-3.5 w-3.5 text-destructive mx-auto" />
+                  )}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>
