@@ -17,8 +17,8 @@ interface ScanRow {
   url: string;
   overall_risk: string;
   tracker_count: number;
-  trackers: any;
-  privacy_grade: any;
+  trackers: TrackerInfo[];
+  privacy_grade: { grade?: string; score?: number } | null;
   created_at: string;
 }
 

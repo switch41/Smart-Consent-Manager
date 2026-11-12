@@ -12,6 +12,7 @@ import type { ScanResult, TrackerInfo } from "@/lib/types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AppHeader } from "@/components/AppHeader";
+import type { Json } from "@/integrations/supabase/types";
 
 const Index = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -54,11 +55,11 @@ const Index = () => {
         overall_risk: scanResult.overallRisk,
         risk_explanation: scanResult.riskExplanation,
         suggested_action: scanResult.suggestedAction,
-        trackers: scanResult.trackers as any,
-        policy_analysis: scanResult.policyAnalysis as any,
+        trackers: scanResult.trackers as unknown as Json,
+        policy_analysis: scanResult.policyAnalysis as unknown as Json,
         tracker_count: scanResult.trackers.length,
-        privacy_grade: scanResult.privacyGrade as any,
-      } as any);
+        privacy_grade: (scanResult.privacyGrade ?? null) as Json | null,
+      });
 
       if (dbError) console.error('Failed to save scan:', dbError);
     } catch (err) {

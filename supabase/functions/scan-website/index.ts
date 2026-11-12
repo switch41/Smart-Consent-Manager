@@ -441,9 +441,21 @@ async function ddgSearchDomainReputation(domain: string): Promise<{ reputation: 
 }
 
 // ─── DuckDuckGo-Style Privacy Grade (A+ to F) ────────────────────────────────
+interface ScanTracker {
+  domain: string;
+  explanation: string;
+  ddgTrackerRadar?: { fingerprinting?: number; prevalence?: number };
+  ddgReputation?: { reputation: string; details: string[] };
+}
+
+interface PolicyAnalysisInput {
+  score?: string;
+  missingKeywords?: string[];
+}
+
 function calculatePrivacyGrade(
-  trackers: any[],
-  policyAnalysis: any,
+  trackers: ScanTracker[],
+  policyAnalysis: PolicyAnalysisInput,
   httpsEnforced: boolean,
 ): { grade: string; score: number; breakdown: { trackerPenalty: number; policyPenalty: number; httpsPenalty: number; fingerprintPenalty: number; prevalencePenalty: number } } {
   // Start at 100 and subtract penalties (like DDG methodology)
@@ -748,11 +760,11 @@ Deno.serve(async (req) => {
     }
 
     // Enrich trackers with DDG reputation data
-    for (const tracker of allTrackers) {
+    for (const tracker of allTrackers as ScanTracker[]) {
       const rep = ddgReputations[tracker.domain];
       if (rep) {
-        (tracker as any).ddgReputation = rep;
-        (tracker as any).explanation += ` | DDG Reputation: ${rep.reputation}. ${rep.details[0] || ''}`;
+        tracker.ddgReputation = rep;
+        tracker.explanation += ` | DDG Reputation: ${rep.reputation}. ${rep.details[0] || ''}`;
       }
     }
 
@@ -795,7 +807,7 @@ Deno.serve(async (req) => {
     if (policyAnalysis.missingKeywords.length > 3) riskParts.push(`missing ${policyAnalysis.missingKeywords.length} key policy terms`);
 
     // DDG-enhanced risk explanation
-    const ddgTrackerCount = allTrackers.filter(t => (t as any).ddgTrackerRadar).length;
+    const ddgTrackerCount = (allTrackers as ScanTracker[]).filter(t => t.ddgTrackerRadar).length;
     if (ddgTrackerCount > 0) riskParts.push(`${ddgTrackerCount} tracker(s) confirmed by DuckDuckGo Tracker Radar`);
 
     const riskExplanation = riskParts.length > 0

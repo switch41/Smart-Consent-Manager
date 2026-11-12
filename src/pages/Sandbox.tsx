@@ -48,10 +48,10 @@ const Sandbox = () => {
 
       setResult(data);
       toast({ title: "Safe snapshot ready", description: `Loaded ${data.title}` });
-    } catch (err: any) {
+    } catch (err) {
       toast({
         title: "Sandbox error",
-        description: err.message || "Could not load the page safely",
+        description: err instanceof Error ? err.message : "Could not load the page safely",
         variant: "destructive",
       });
     } finally {
